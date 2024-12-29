@@ -16,7 +16,7 @@ const GradeInputs: React.FC<GradeInputsProps> = ({ onGradeChange }) => {
 
   return (
     <div className="mb-4">
-      <h3 className="text-xl font-bold mb-2">Data Rapor</h3>
+      <h3 className="text-xl font-bold mb-2">Data Nilai Rapot</h3>
       {grades.map((grade, index) => (
         <div key={index} className="mb-2">
           <label htmlFor={`semester-${index + 1}`} className="block mb-1">

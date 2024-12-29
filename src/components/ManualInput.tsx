@@ -18,7 +18,7 @@ const ManualInput: React.FC<ManualInputProps> = ({ onInputChange }) => {
       <h3 className="text-xl font-bold mb-2">
         Input Manual Nilai Referensi SNBP
       </h3>
-      <div className="mb-2">
+      {/* <div className="mb-2">
         <label htmlFor="manual-university" className="block mb-1">
           Masukkan Nama Universitas (Opsional)
         </label>
@@ -41,10 +41,10 @@ const ManualInput: React.FC<ManualInputProps> = ({ onInputChange }) => {
           onChange={(e) => setMajor(e.target.value)}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-      </div>
+      </div> */}
       <div className="mb-2">
         <label htmlFor="manual-snbp-ref" className="block mb-1">
-          Masukkan Nilai Referensi SNBP PTN tujuan / Target Nilai
+          Masukkan Nilai Referensi SNBP PTN / Target Nilai
         </label>
         <input
           type="number"

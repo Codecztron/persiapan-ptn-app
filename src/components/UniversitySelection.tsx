@@ -16,6 +16,10 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
   const [majors, setMajors] = useState<string[]>([]);
   const [universityInput, setUniversityInput] = useState<string>("");
   const [majorInput, setMajorInput] = useState<string>("");
+  const [filteredUniversities, setFilteredUniversities] = useState<string[]>(
+    [],
+  );
+  const [filteredMajors, setFilteredMajors] = useState<string[]>([]);
 
   useEffect(() => {
     if (data) {
@@ -23,6 +27,7 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
         new Set(data.map((item) => item.UNIV)),
       );
       setUniversities(uniqueUniversities);
+      setFilteredUniversities(uniqueUniversities);
       setSelectedUniversity(uniqueUniversities[0] ?? "");
     }
   }, [data]);
@@ -33,7 +38,9 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
         .filter((item) => item.UNIV === selectedUniversity)
         .map((item) => item.JURUSAN);
       setMajors(filteredMajors);
+      setFilteredMajors(filteredMajors);
       setSelectedMajor(filteredMajors[0] ?? "");
+      setMajorInput(""); // Reset major input when university changes
     }
   }, [data, selectedUniversity]);
 
@@ -42,6 +49,22 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
       onSelectionChange(selectedUniversity, selectedMajor);
     }
   }, [selectedUniversity, selectedMajor, onSelectionChange]);
+
+  useEffect(() => {
+    const filtered = filterUniversities(universityInput);
+    setFilteredUniversities(filtered);
+    if (filtered.length > 0 && !filtered.includes(selectedUniversity)) {
+      setSelectedUniversity(filtered[0]);
+    }
+  }, [universityInput]);
+
+  useEffect(() => {
+    const filtered = filterMajors(majorInput);
+    setFilteredMajors(filtered);
+    if (filtered.length > 0 && !filtered.includes(selectedMajor)) {
+      setSelectedMajor(filtered[0]);
+    }
+  }, [majorInput]);
 
   const filterUniversities = (value: string) => {
     if (!universities || !value) return universities;
@@ -55,6 +78,12 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
     return majors.filter((major) =>
       major?.toLowerCase().includes(value.toLowerCase()),
     );
+  };
+
+  const handleUniversityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newUniversity = e.target.value;
+    setSelectedUniversity(newUniversity);
+    setUniversityInput("");
   };
 
   return (
@@ -76,10 +105,10 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
         />
         <select
           value={selectedUniversity}
-          onChange={(e) => setSelectedUniversity(e.target.value)}
+          onChange={handleUniversityChange}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {filterUniversities(universityInput).map((uni) => (
+          {filteredUniversities.map((uni) => (
             <option key={uni} value={uni}>
               {uni}
             </option>
@@ -103,7 +132,7 @@ const UniversitySelection: React.FC<UniversitySelectionProps> = ({
           onChange={(e) => setSelectedMajor(e.target.value)}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {filterMajors(majorInput).map((major) => (
+          {filteredMajors.map((major) => (
             <option key={major} value={major}>
               {major}
             </option>

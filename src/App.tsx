@@ -30,6 +30,27 @@ const App: React.FC = () => {
   const [predictionResult, setPredictionResult] = useState<any>(null);
   const chartRef = useRef<HTMLCanvasElement>(null);
 
+  const fetchDataFromCSV = async () => {
+    try {
+      const response = await fetch("/data.csv");
+      const reader = response.body?.getReader();
+      const result = await reader?.read();
+      const decoder = new TextDecoder("utf-8");
+      const csv = decoder.decode(result?.value);
+
+      Papa.parse(csv, {
+        header: true,
+        delimiter: ";",
+        dynamicTyping: true,
+        complete: (results) => {
+          setData(results.data as UniversityData[]);
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const visualizeGrades = (
     grades: number[],
     chartRef: React.RefObject<HTMLCanvasElement>,
@@ -68,7 +89,7 @@ const App: React.FC = () => {
           plugins: {
             title: {
               display: true,
-              text: "Grafik Nilai Rapor",
+              text: "Grafik Nilai Rapot",
               font: {
                 size: window.innerWidth < 768 ? 14 : 16,
                 weight: "bold",
@@ -116,30 +137,12 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/data.csv");
-      const reader = response.body?.getReader();
-      const result = await reader?.read();
-      const decoder = new TextDecoder("utf-8");
-      const csv = decoder.decode(result?.value);
-
-      Papa.parse(csv, {
-        header: true,
-        delimiter: ";",
-        dynamicTyping: true,
-        complete: (results) => {
-          setData(results.data as UniversityData[]);
-        },
-      });
-    };
-
-    fetchData();
+    fetchDataFromCSV();
   }, []);
 
   useEffect(() => {
     const newAverageGrade = calculateAverageGrade(grades);
     setAverageGrade(newAverageGrade);
-    console.log("useEffect untuk chart terpanggil", grades, chartRef.current);
 
     if (chartRef.current) {
       visualizeGrades(grades, chartRef);
@@ -186,6 +189,23 @@ const App: React.FC = () => {
     setManualSnbpRef(snbpRef);
   };
 
+  const handleDataSourceChange = async (
+    newSource: "Database" | "Input Manual",
+  ) => {
+    setDataSource(newSource);
+    setPredictionResult(null);
+
+    if (newSource === "Database") {
+      setManualUniversity("");
+      setManualMajor("");
+      setManualSnbpRef(0);
+      await fetchDataFromCSV(); // Always refetch data when switching to Database mode
+    } else {
+      setSelectedUniversity("");
+      setSelectedMajor("");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
       <div className="container mx-auto px-4 py-6 sm:p-8">
@@ -197,8 +217,7 @@ const App: React.FC = () => {
             </span>
           </h1>
           <p className="text-base sm:text-lg text-gray-600 mb-4 flex items-center justify-center">
-            <FaBookOpen className="mr-2" />
-            by Codecztron (Andri)
+            <FaBookOpen className="mr-2" />© Codecztron (Andri)
           </p>
           <a
             href="https://saweria.co/Codecztron"
@@ -225,7 +244,7 @@ const App: React.FC = () => {
                     type="radio"
                     value="Database"
                     checked={dataSource === "Database"}
-                    onChange={() => setDataSource("Database")}
+                    onChange={() => handleDataSourceChange("Database")}
                     className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
                   <span className="text-gray-700">Database</span>
@@ -235,10 +254,12 @@ const App: React.FC = () => {
                     type="radio"
                     value="Input Manual"
                     checked={dataSource === "Input Manual"}
-                    onChange={() => setDataSource("Input Manual")}
+                    onChange={() => handleDataSourceChange("Input Manual")}
                     className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
-                  <span className="text-gray-700">Input Manual</span>
+                  <span className="text-gray-700">
+                    Input Manual / Target Nilai
+                  </span>
                 </label>
               </div>
             </div>
@@ -258,7 +279,7 @@ const App: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
             <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
               <span className="text-base sm:text-lg text-gray-700 mb-2 sm:mb-0">
-                Rata-rata Nilai Rapor:
+                Rata-rata Nilai Rapot:
               </span>
               <span className="text-xl sm:text-2xl font-bold text-blue-600">
                 {averageGrade.toFixed(2)}
