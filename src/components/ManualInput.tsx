@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from "react";
 
 interface ManualInputProps {
-  onInputChange: (university: string, major: string, snbpRef: number) => void;
+  // onInputChange: (university: string, major: string, snbpRef: number) => void;
+  onInputChange: (snbpRef: number) => void;
 }
 
+// const ManualInput: React.FC<ManualInputProps> = ({ onInputChange }) => {
+//   const [university] = useState<string>("");
+//   const [major] = useState<string>("");
+//   const [snbpRef, setSnbpRef] = useState<number>(0);
+
 const ManualInput: React.FC<ManualInputProps> = ({ onInputChange }) => {
-  const [university, setUniversity] = useState<string>("");
-  const [major, setMajor] = useState<string>("");
   const [snbpRef, setSnbpRef] = useState<number>(0);
 
+  // useEffect(() => {
+  //   onInputChange(university, major, snbpRef);
+  // }, [university, major, snbpRef]);
+
   useEffect(() => {
-    onInputChange(university, major, snbpRef);
-  }, [university, major, snbpRef]);
+    onInputChange(snbpRef);
+  }, [snbpRef]);
 
   return (
     <div className="mb-4">

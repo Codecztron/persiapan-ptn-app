@@ -179,13 +179,7 @@ const App: React.FC = () => {
     setSelectedMajor(major);
   };
 
-  const handleManualInputChange = (
-    university: string,
-    major: string,
-    snbpRef: number,
-  ) => {
-    setManualUniversity(university);
-    setManualMajor(major);
+  const handleManualInputChange = (snbpRef: number) => {
     setManualSnbpRef(snbpRef);
   };
 
