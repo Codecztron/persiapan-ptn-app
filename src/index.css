@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Anda (jika ada) */
+body {
+    font-family: "Roboto", sans-serif;
+    line-height: 1.6;
+}
+
+.bg-green-custom {
+    background-color: #e6f4ea;
+}
+.bg-yellow-custom {
+    background-color: #fff8e1;
+}
+.bg-red-custom {
+    background-color: #ffe0e0;
+}
+
+.border-green-custom {
+    border-color: #a7d9b4;
+}
+
+.border-yellow-custom {
+    border-color: #fde488;
+}
+.border-red-custom {
+    border-color: #ff6b6b;
+}
